@@ -90,6 +90,22 @@ class TargetPane extends React.Component {
     handleDuplicateSprite (id) {
         this.props.vm.duplicateSprite(id);
     }
+
+    componentDidMount() {
+        this.props.vm.on('SPRITE_DUPLICATED', this.handleResetZoom);
+    }
+    
+    handleResetZoom = () => {
+        // Assuming Blockly has a global workspace, you can call reset zoom like this:
+        const workspace = Blockly.getMainWorkspace();
+        if (workspace) {
+            workspace.zoomControls.resetZoom(); // Adjust if your access to zoomControls differs
+        }
+    }
+    
+    componentWillUnmount() {
+        this.props.vm.removeListener('SPRITE_DUPLICATED', this.handleResetZoom);
+    }
     handleExportSprite (id) {
         const spriteName = this.props.vm.runtime.getTargetById(id).getName();
         const saveLink = document.createElement('a');
